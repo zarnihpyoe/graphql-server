@@ -28,7 +28,7 @@ export const UserType = new GraphQLObjectType({
     description: '...',
     interfaces: [ NodeInterface ],
 
-    fields: {
+    fields: () => ({
         id: {
             type: new GraphQLNonNull(GraphQLID),
             resolve: (source) => tables.dbIdToNodeId(source.id, source.__tableName)
@@ -36,15 +36,18 @@ export const UserType = new GraphQLObjectType({
         name: { type: new GraphQLNonNull(GraphQLString) },      // if didn't specify resolve, by default, will look at source[name_of_the_field]
         about: { type: new GraphQLNonNull(GraphQLString) },
         friends: {
-            type: new GraphQLList(GraphQLID),
+            type: new GraphQLList(UserType),
             resolve: (source) => (
-                loaders.getFriendIdsForUser(source.id)
-                    .then(rows => 
-                        rows.map(row => tables.dbIdToNodeId(row.user_id_b, row.__tableName))
-                    )
-                )
+                loaders.getFriendIdsForUser(source.id).then(rows => {
+                    const promises = rows.map(row => {
+                        const friendNodeId = tables.dbIdToNodeId(row.user_id_b, row.__tableName)
+                        return loaders.getNodeById(friendNodeId)
+                    })
+                    return Promise.all(promises)
+                })
+            )
         },
-    }
+    })
 })
 
 export const PostType = new GraphQLObjectType({
