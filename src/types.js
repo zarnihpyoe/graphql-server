@@ -4,9 +4,11 @@ import {
     GraphQLID,
     GraphQLString,
     GraphQLObjectType,
+    GraphQLList,
 } from 'graphql'
 
 import * as tables from './tables'
+import * as loaders from './loaders'
 
 export const NodeInterface = new GraphQLInterfaceType({
     name: 'Node',
@@ -33,6 +35,15 @@ export const UserType = new GraphQLObjectType({
         },
         name: { type: new GraphQLNonNull(GraphQLString) },      // if didn't specify resolve, by default, will look at source[name_of_the_field]
         about: { type: new GraphQLNonNull(GraphQLString) },
+        friends: {
+            type: new GraphQLList(GraphQLID),
+            resolve: (source) => (
+                loaders.getFriendIdsForUser(source.id)
+                    .then(rows => 
+                        rows.map(row => tables.dbIdToNodeId(row.user_id_b, row.__tableName))
+                    )
+                )
+        },
     }
 })
 
