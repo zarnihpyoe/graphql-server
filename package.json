@@ -1,0 +1,32 @@
+{
+  "name": "graphql-server",
+  "version": "0.0.1",
+  "description": "Experimenting graphql server implementation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "seed": "node seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zarnihpyoe/graphql-server.git"
+  },
+  "author": "Zarni Hpyoe",
+  "bugs": {
+    "url": "https://github.com/zarnihpyoe/graphql-server/issues"
+  },
+  "homepage": "https://github.com/zarnihpyoe/graphql-server#readme",
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.3",
+    "sql": "^0.78.0",
+    "sqlite3": "^3.1.11"
+  }
+}
